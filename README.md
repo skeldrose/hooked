@@ -1,2 +1,2 @@
 # hooked
-Phishing awareness platform for my degree final project.
+Phishing awareness platform for The Open University Final Project.
