@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spot the Phish! | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Extra styles for this page only */
+    .game-container {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .image-pair {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .image-pair img {
+      width: 300px;
+      max-width: 90%;
+      border: 2px solid #F76C5E;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .image-pair img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    #feedback {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    #next-btn {
+      display: inline-block;
+      background-color: #2A6F74;
+      color: white;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #next-btn:hover {
+      background-color: #1b4e50;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="examples.html">Examples</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+    </ul>
+  </nav>
+
+  <main class="game-container">
+    <h2>Spot the Phish!</h2>
+
+    <div class="image-pair">
+      <img id="image-left" src="images/phish1.png" alt="Left Image" class="clickable">
+      <img id="image-right" src="images/legit1.png" alt="Right Image" class="clickable">
+    </div>
+
+    <p id="feedback"></p>
+
+    <button id="next-btn">Next</button>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+    const rounds = [
+      { phish: "images/phish1.png", legit: "images/legit1.png", correct: "left" },
+      { phish: "images/phish2.png", legit: "images/legit2.png", correct: "right" },
+      { phish: "images/phish3.png", legit: "images/legit3.png", correct: "left" }
+    ];
+
+    let currentRound = 0;
+
+    const leftImage = document.getElementById('image-left');
+    const rightImage = document.getElementById('image-right');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+
+    function loadRound() {
+      const round = rounds[currentRound];
+      if (round.correct === "left") {
+        leftImage.src = round.phish;
+        rightImage.src = round.legit;
+      } else {
+        leftImage.src = round.legit;
+        rightImage.src = round.phish;
+      }
+      feedback.textContent = "";
+    }
+
+    function checkAnswer(side) {
+      if (side === rounds[currentRound].correct) {
+        feedback.textContent = "✅ Correct!";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = "❌ Oops, that was a legit email!";
+        feedback.style.color = "red";
+      }
+    }
+
+    leftImage.addEventListener('click', () => {
+      checkAnswer('left');
+    });
+
+    rightImage.addEventListener('click', () => {
+      checkAnswer('right');
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentRound++;
+      if (currentRound >= rounds.length) {
+        alert("You've completed the game! Great job!");
+        currentRound = 0;
+      }
+      loadRound();
+    });
+
+    loadRound();
+  </script>
+
+</body>
+</html>

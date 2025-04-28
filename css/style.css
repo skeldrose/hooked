@@ -36,14 +36,14 @@ nav .logo {
   color: #2A6F74;
   font-size: 1.1rem;
   font-weight: normal;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .nav-links li a:hover {
   color: #F76C5E;
   text-decoration: underline;
+  transform: translateY(-2px);
 }
-
 
 /* Main content */
 main {
@@ -91,17 +91,26 @@ main {
 }
 
 .icon-box {
+  display: block;
   width: 250px;
   padding: 30px 20px;
   border: 2px solid #F76C5E;
   border-radius: 12px;
   background-color: transparent;
   text-align: center;
-  transition: transform 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease forwards;
 }
 
 .icon-box:hover {
   transform: scale(1.05);
+  background-color: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 }
 
 .icon-box img {
@@ -129,6 +138,14 @@ main {
   line-height: 1.4;
 }
 
+/* Animation keyframes */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Footer */
 footer {
   text-align: center;
@@ -142,4 +159,68 @@ footer {
   max-width: 210px;
   display: block;
   margin: 0 auto -40px auto;
+}
+
+/* Buttons (e.g., Games page, Survey button) */
+.start-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 15px 30px;
+  background-color: #F76C5E;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background-color: #d9594d;
+}
+
+.games-divider {
+  margin: 50px auto;
+  width: 60%;
+  border: 1px solid #2A6F74;
+}
+
+.coming-soon {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.coming-soon h2 {
+  font-size: 1.5rem;
+  color: #2A6F74;
+}
+
+.coming-soon p {
+  color: #2A6F74;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.survey-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 24px;
+  background-color: #2A6F74;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.survey-button:hover {
+  background-color: #1b4e50;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .icon-box {
+    width: 100%;
+    max-width: 350px;
+  }
 }
