@@ -5,39 +5,93 @@
   <title>Spot the Phish! | Hooked?</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Extra styles for this page only */
     .game-container {
       text-align: center;
       padding: 40px 20px;
+    }
+
+    .timer-bar-container {
+      max-width: 1040px;
+      margin: 0 auto 30px auto;
+      background-color: #eee;
+      height: 16px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #2A6F74;
+    }
+
+    .timer-bar {
+      height: 100%;
+      background-color: #F76C5E;
+      width: 100%;
+    }
+
+    .timer-animate {
+      animation: shrinkBar 7s linear forwards;
+    }
+
+    @keyframes shrinkBar {
+      from { width: 100%; }
+      to { width: 0%; }
     }
 
     .image-pair {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 30px;
+      gap: 40px;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
 
-    .image-pair img {
-      width: 300px;
-      max-width: 90%;
+    .image-box {
+      position: relative;
+      width: 500px;
+      height: 800px;
       border: 2px solid #F76C5E;
       border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow: visible;
     }
 
-    .image-pair img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    .image-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease, z-index 0.3s ease;
+      position: relative;
+      z-index: 0;
+    }
+
+    .image-box:hover img {
+      transform: scale(1.5);
+      z-index: 10;
+      position: absolute;
+    }
+
+    .image-box.disable-hover:hover img {
+      transform: none !important;
+      z-index: 0 !important;
+      position: relative !important;
+    }
+
+    .zoom-linkedin:hover {
+      transform: scale(2) !important;
     }
 
     #feedback {
       font-size: 1.2rem;
-      margin-bottom: 20px;
-      font-weight: bold;
+      margin: 40px auto;
+      max-width: 850px;
+      text-align: left;
+      line-height: 1.8;
+      color: #2A6F74;
     }
 
     #next-btn {
@@ -55,52 +109,234 @@
     #next-btn:hover {
       background-color: #1b4e50;
     }
+
+    #next-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      text-align: center;
+      padding-top: 150px;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 60%;
+      max-width: 500px;
+    }
+
+    .modal-content h2 {
+      color: #F76C5E;
+      margin-bottom: 20px;
+    }
+
+    .modal-content button {
+      background-color: #2A6F74;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #1b4e50;
+    }
+      .exit-button {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background-color: #F76C5E;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .exit-button:hover {
+      background-color: #d9534f;
+    }
   </style>
+</style>
 </head>
 <body>
-
-  <nav>
-    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="games.html">Games</a></li>
-      <li><a href="examples.html">Examples</a></li>
-      <li><a href="quiz.html">Quiz</a></li>
-    </ul>
-  </nav>
-
   <main class="game-container">
+    <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
     <h2>Spot the Phish!</h2>
-
+    <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
     <div class="image-pair">
-      <img id="image-left" src="images/phish1.png" alt="Left Image" class="clickable">
-      <img id="image-right" src="images/legit1.png" alt="Right Image" class="clickable">
+      <div class="image-box" id="box-left"><img id="image-left" src="" alt="Left Email Example"></div>
+      <div class="image-box" id="box-right"><img id="image-right" src="" alt="Right Email Example"></div>
     </div>
-
-    <p id="feedback"></p>
-
-    <button id="next-btn">Next</button>
+    <div id="feedback"></div>
+    <button id="next-btn" disabled>Next</button>
   </main>
 
-  <footer>
-    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo">
-    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
-    <p>Created as part of a final year project at The Open University</p>
-  </footer>
+  <div id="game-over-modal" class="modal">
+    <div class="modal-content">
+      <h2>⏰ Time's up! Game Over</h2>
+      <button onclick="window.location.href='spot_the_phish_start.html'">Try Again</button>
+      <button onclick="window.location.href='index.html'">Go to Home</button>
+    </div>
+  </div>
+
+  <div id="game-complete-modal" class="modal">
+    <div class="modal-content">
+      <h2 id="final-score-title"></h2>
+      <p id="final-score-message"></p>
+      <button onclick="window.location.href='spot_the_phish_start.html'">Play Again</button>
+      <button onclick="window.location.href='index.html'">Go to Home</button>
+    </div>
+  </div>
+
+  <div id="exit-confirm-modal" class="modal">
+    <div class="modal-content">
+      <h2>Are you sure you want to exit? 👀</h2>
+      <p>This will take you back to the Games page.</p>
+      <button onclick="window.location.href='games.html'">Yes, Exit</button>
+      <button onclick="document.getElementById('exit-confirm-modal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+
 
   <script>
     const rounds = [
-      { phish: "images/phish1.png", legit: "images/legit1.png", correct: "left" },
-      { phish: "images/phish2.png", legit: "images/legit2.png", correct: "right" },
-      { phish: "images/phish3.png", legit: "images/legit3.png", correct: "left" }
+      {
+        phish: "images/PayPal_Phishing_Example.png",
+        legit: "images/PayPal_Legit_example.png",
+        correct: "right",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>It used a fake sender address</li>
+              <li>It tried to scare you into clicking a link</li>
+              <li>It had spelling mistakes and vague language</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/Royal_Mail_Phishing_Example.png",
+        legit: "images/Royal_Mail_Legit_Example.png",
+        correct: "left",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>It asked for a payment using odd currency formatting (J3,89)</li>
+              <li>It linked to an unknown external page via "click here"</li>
+              <li>It used a vague greeting instead of your name</li>
+              <li>It created false urgency with an unverified delivery issue</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/LinkedIn_Phishing_Example.png",
+        legit: "images/LinkedIn_Legit_Example.png",
+        correct: "left",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>The sender domain was suspicious (careerbuildcompany.com)</li>
+              <li>It tried to mimic LinkedIn’s interface</li>
+              <li>It used a generic subject and unclear call to action</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/Netflix_Phishing_Example.png",
+        legit: "images/Netflix_Legit_Example.png",
+        correct: "right",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>It used a placeholder name (Hi {fname}) instead of a real name</li>
+              <li>It created urgency with bold wording like "immediately"</li>
+              <li>It linked to an unknown location using a vague "click here"</li>
+              <li>The branding was inconsistent and the sender wasn't verified</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/HMRC_Phishing_Example.png",
+        legit: "images/HMRC_Legit_Example.png",
+        correct: "left",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>It uses a vague placeholder greeting ("Dear xxxx") instead of your name</li>
+              <li>There are multiple grammar and punctuation errors (e.g. “4,5 working days”)</li>
+              <li>It contains a suspicious link labelled “money claim form”</li>
+              <li>Real HMRC messages don’t request sensitive actions via email links</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/Monday_Phishing_Example.png",
+        legit: "images/Monday_Legit_Example.png",
+        correct: "left",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>The sender address is suspicious (support@shared-document.com)</li>
+              <li>The message is vague and lacks a personalised greeting</li>
+              <li>The call-to-action uses urgency (“Everyone else has already joined!”)</li>
+              <li>The formatting is slightly off compared to official Monday.com invitations</li>
+            </ul>`
+        }
+      },
+      {
+        phish: "images/Amazon_Phishing_Example.png",
+        legit: "images/Amazon_Legit_Example.png",
+        correct: "left",
+        feedback: {
+          correct: `✅ Correct! You spotted the phishing email.`,
+          incorrect: `❌ Incorrect. It was a phishing email because:
+            <ul>
+              <li>It creates a false sense of urgency by threatening account lock</li>
+              <li>The language is overly formal and unnatural for Amazon</li>
+              <li>The sender's intent is to collect personal billing info</li>
+              <li>Real Amazon emails don't request sensitive information like this</li>
+            </ul>`
+        }
+      },
     ];
 
     let currentRound = 0;
+    let score = 0;
+    let timer;
+    const roundDuration = 7000;
 
     const leftImage = document.getElementById('image-left');
     const rightImage = document.getElementById('image-right');
     const feedback = document.getElementById('feedback');
     const nextBtn = document.getElementById('next-btn');
+    const boxLeft = document.getElementById('box-left');
+    const boxRight = document.getElementById('box-right');
+    const timerBar = document.getElementById('timer-bar');
+    const modal = document.getElementById('game-over-modal');
+    const completeModal = document.getElementById('game-complete-modal');
+    const finalScoreTitle = document.getElementById('final-score-title');
+    const finalScoreMessage = document.getElementById('final-score-message');
 
     function loadRound() {
       const round = rounds[currentRound];
@@ -111,38 +347,73 @@
         leftImage.src = round.legit;
         rightImage.src = round.phish;
       }
-      feedback.textContent = "";
+      feedback.innerHTML = "";
+      boxLeft.classList.remove("disable-hover");
+      boxRight.classList.remove("disable-hover");
+      leftImage.style.pointerEvents = "auto";
+      rightImage.style.pointerEvents = "auto";
+      nextBtn.disabled = true;
+      nextBtn.textContent = (currentRound === rounds.length - 1) ? 'Finish' : 'Next';
+      startTimer();
+    }
+
+    function startTimer() {
+      timerBar.classList.remove("timer-animate");
+      void timerBar.offsetWidth;
+      timerBar.classList.add("timer-animate");
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        showGameOver();
+      }, roundDuration);
+    }
+
+    function stopTimer() {
+      clearTimeout(timer);
+      timerBar.classList.remove("timer-animate");
     }
 
     function checkAnswer(side) {
-      if (side === rounds[currentRound].correct) {
-        feedback.textContent = "✅ Correct!";
-        feedback.style.color = "green";
-      } else {
-        feedback.textContent = "❌ Oops, that was a legit email!";
-        feedback.style.color = "red";
-      }
+      stopTimer();
+      leftImage.style.pointerEvents = "none";
+      rightImage.style.pointerEvents = "none";
+      boxLeft.classList.add("disable-hover");
+      boxRight.classList.add("disable-hover");
+
+      const round = rounds[currentRound];
+      const isCorrect = side === round.correct;
+      if (isCorrect) score++;
+
+      feedback.innerHTML = isCorrect ? round.feedback.correct : round.feedback.incorrect;
+      feedback.style.color = isCorrect ? "green" : "red";
+      nextBtn.disabled = false;
     }
 
-    leftImage.addEventListener('click', () => {
-      checkAnswer('left');
-    });
+    function showGameOver() {
+      modal.style.display = "block";
+    }
 
-    rightImage.addEventListener('click', () => {
-      checkAnswer('right');
-    });
+    function showGameComplete() {
+      const total = rounds.length;
+      finalScoreTitle.textContent = `Your Score: ${score}/${total}`;
+      finalScoreMessage.textContent = score >= 4
+        ? '🎉 Great job! You passed the game!'
+        : '❌ Game Over. You didn\'t score high enough. Try again!';
+      completeModal.style.display = "block";
+    }
 
-    nextBtn.addEventListener('click', () => {
+    leftImage.addEventListener("click", () => checkAnswer("left"));
+    rightImage.addEventListener("click", () => checkAnswer("right"));
+
+    nextBtn.addEventListener("click", () => {
       currentRound++;
       if (currentRound >= rounds.length) {
-        alert("You've completed the game! Great job!");
-        currentRound = 0;
+        showGameComplete();
+      } else {
+        loadRound();
       }
-      loadRound();
     });
 
     loadRound();
   </script>
-
 </body>
 </html>

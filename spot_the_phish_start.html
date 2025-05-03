@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spot the Phish - Start | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .start-container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .start-container h2 {
+      font-size: 2rem;
+      color: #2A6F74;
+    }
+
+    .start-container p {
+      font-size: 1.1rem;
+      color: #2A6F74;
+      margin: 20px 0;
+    }
+
+    #start-btn {
+      display: inline-block;
+      background-color: #F76C5E;
+      color: white;
+      padding: 16px 32px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    #start-btn:hover {
+      background-color: #d9594d;
+    }
+
+    .timer-placeholder {
+      margin-top: 40px;
+      font-size: 1.5rem;
+      color: #2A6F74;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="examples.html">Examples</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+    </ul>
+  </nav>
+
+  <main class="start-container">
+    <h2>Welcome to Spot the Phish!</h2>
+    <p>Can  you spot the phish in time? ⏳</p>
+    <p>When you're ready, click Go to begin. See if you can spot the phishing emails!</p>
+    <button id="start-btn">Go</button>
+    <p>Score 50% or more to pass the game! 🎯</p>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+    document.getElementById("start-btn").addEventListener("click", function() {
+      window.location.href = "spot_the_phish.html";
+    });
+  </script>
+
+</body>
+</html>
