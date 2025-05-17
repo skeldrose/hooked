@@ -34,16 +34,27 @@ nav .logo {
 .nav-links li a {
   text-decoration: none;
   color: #2A6F74;
-  font-size: 1.1rem;
-  font-weight: normal;
-  transition: color 0.3s ease, transform 0.3s ease;
+  font-size: 1.15rem;
+  font-weight: 600; /* Bolder for visibility */
+  letter-spacing: 0.3px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .nav-links li a:hover {
-  color: #F76C5E;
-  text-decoration: underline;
-  transform: translateY(-2px);
+  color: white;
+  background-color: #F76C5E;
+  text-decoration: none;
+  transform: translateY(-1px);
 }
+
+.nav-links li a:focus {
+  outline: 2px solid #F76C5E;
+  outline-offset: 2px;
+}
+
 
 /* Main content */
 main {
@@ -170,7 +181,7 @@ footer {
   color: white;
   text-decoration: none;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: normal;
   border-radius: 8px;
   transition: background-color 0.3s ease;
 }
@@ -202,25 +213,23 @@ footer {
 }
 
 .survey-button {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 12px 24px;
-  background-color: #2A6F74;
+  background-color: #F76C5E;
   color: white;
-  text-decoration: none;
-  font-size: 1rem;
-  border-radius: 6px;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: normal;
+  border-radius: 8px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
 }
+
 
 .survey-button:hover {
-  background-color: #1b4e50;
+  background-color: #d9534f; /* Slightly darker coral on hover */
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .icon-box {
-    width: 100%;
-    max-width: 350px;
-  }
-}
+
