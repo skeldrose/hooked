@@ -56,8 +56,9 @@
     <p>Sign up to track your progress and scores.</p>
 
     <form id="signup-form" class="form-box">
-      <input type="email" id="email" class="input-field" placeholder="Email" required>
-      <input type="password" id="password" class="input-field" placeholder="Password" required>
+      <input type="text" id="username" name="username" class="input-field" placeholder="Username" autocomplete="username" required>
+      <input type="email" id="email" name="email" class="input-field" placeholder="Email" autocomplete="email" required>
+      <input type="password" id="password" name="password" class="input-field" placeholder="Password" autocomplete="new-password" required>
       <button type="submit">Sign Up</button>
       <div id="signup-error" class="error"></div>
       <div class="login-link">
@@ -66,6 +67,12 @@
     </form>
   </main>
 
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("signup-form");
@@ -73,23 +80,41 @@
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
         try {
-          const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-          });
+          // Sign up user and immediately get user object
+          const { data, error } = await supabase.auth.signUp({ email, password });
 
           if (error) {
             document.getElementById("signup-error").textContent = error.message;
             return;
           }
 
-          // Auto-login or redirect immediately (no email confirmation required)
-          alert("✅ Account created! You can now log in.");
-          window.location.href = "login.html";
+          // Use data.user directly (no email confirmation check)
+          const userId = data.user?.id;
+
+          if (!userId) {
+            document.getElementById("signup-error").textContent = "User ID not available.";
+            return;
+          }
+
+          // Insert username into 'profiles' table
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert([{ id: userId, username }]);
+
+          if (profileError) {
+            console.error("Failed to save username:", profileError);
+            document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+            return;
+          }
+
+          alert("✅ Account created! You are now logged in.");
+          window.location.href = "index.html";
+
         } catch (err) {
           console.error("Unexpected error during signup:", err);
           document.getElementById("signup-error").textContent = "An unexpected error occurred.";

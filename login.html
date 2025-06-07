@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Login | Hooked?</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="supabase.js" defer></script>
   <style>
     .login-container {
       text-align: center;
       padding: 60px 20px;
-    }
-    .intro {
-      text-align: center;
-      margin-bottom: 30px;
     }
     .form-box {
       max-width: 400px;
@@ -52,11 +48,37 @@
       text-decoration: underline;
     }
   </style>
-  <script defer>
+</head>
+<body>
+
+  <main class="login-container">
+    <h2>Login to Hooked?</h2>
+    <p>Enter your email and password to continue.</p>
+
+    <form id="login-form" class="form-box">
+      <input type="email" id="email" name="email" class="input-field" placeholder="Email" autocomplete="email" required>
+      <input type="password" id="password" name="password" class="input-field" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit">Log In</button>
+      <div id="login-error" class="error"></div>
+      <div class="signup-link">
+        Don't have an account? <a href="signup.html">Sign up here</a>
+      </div>
+    </form>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("login-form");
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
@@ -69,6 +91,7 @@
           }
 
           if (data.user) {
+            // Login successful - redirect to main page
             window.location.href = "index.html";
           } else {
             document.getElementById("login-error").textContent = "Login failed.";
@@ -80,31 +103,6 @@
       });
     });
   </script>
-</head>
-<body>
-
-  <main class="login-container">
-    <section class="intro">
-      <h2>Login to Hooked?</h2>
-      <p>Enter your email and password to continue.</p>
-    </section>
-
-    <form id="login-form" class="form-box">
-      <input type="email" id="email" class="input-field" placeholder="Email" required>
-      <input type="password" id="password" class="input-field" placeholder="Password" required>
-      <button type="submit">Login</button>
-      <div id="login-error" class="error"></div>
-      <div class="signup-link">
-        Don't have an account? <a href="signup.html">Sign up here</a>
-      </div>
-    </form>
-  </main>
-
-  <footer>
-    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo">
-    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
-    <p>Created as part of a final year project at The Open University</p>
-  </footer>
 
 </body>
 </html>
