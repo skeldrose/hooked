@@ -60,15 +60,75 @@
 </head>
 <body>
 
-  <nav>
-    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="games.html">Games</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="quiz.html">Quiz</a></li>
-    </ul>
-  </nav>
+<nav>
+  <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="quiz.html">Quiz</a></li>
+  </ul>
+  <div id="user-nav" style="margin-left: auto; padding-right: 20px; display: flex; align-items: center; gap: 10px;">
+    <!-- Welcome and Logout will be injected here -->
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const userNav = document.getElementById("user-nav");
+    userNav.innerHTML = ""; // Clear existing content
+
+    if (user) {
+      // Create welcome text span
+      const welcomeSpan = document.createElement("span");
+      welcomeSpan.style.fontWeight = "bold";
+      welcomeSpan.style.color = "#2A6F74";
+      welcomeSpan.textContent = `Welcome, ${user.user_metadata?.username || user.email}`;
+
+      // Create logout button
+      const logoutBtn = document.createElement("button");
+      logoutBtn.textContent = "Logout";
+      logoutBtn.style.backgroundColor = "#F76C5E";
+      logoutBtn.style.color = "white";
+      logoutBtn.style.border = "none";
+      logoutBtn.style.padding = "6px 12px";
+      logoutBtn.style.borderRadius = "6px";
+      logoutBtn.style.cursor = "pointer";
+      logoutBtn.style.fontSize = "0.9rem";
+
+      logoutBtn.addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        location.reload();
+      });
+
+      // Append welcome text and logout button to user-nav div
+      userNav.appendChild(welcomeSpan);
+      userNav.appendChild(logoutBtn);
+    } else {
+      // User not logged in, show Login / Sign Up links
+      const loginLink = document.createElement("a");
+      loginLink.href = "login.html";
+      loginLink.textContent = "Log In";
+      loginLink.style.color = "#2A6F74";
+      loginLink.style.textDecoration = "none";
+      loginLink.style.fontWeight = "bold";
+      loginLink.style.marginRight = "10px";
+
+      const signupLink = document.createElement("a");
+      signupLink.href = "signup.html";
+      signupLink.textContent = "Sign Up";
+      signupLink.style.color = "#2A6F74";
+      signupLink.style.textDecoration = "none";
+      signupLink.style.fontWeight = "bold";
+
+      userNav.appendChild(loginLink);
+      userNav.appendChild(signupLink);
+    }
+  });
+</script>
+
 
   <main class="start-container">
     <h2>Welcome to Spot the Phish!</h2>
