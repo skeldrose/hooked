@@ -11,17 +11,14 @@
       text-align: center;
       padding: 60px 20px;
     }
-
-      .intro {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
+    .intro {
+      text-align: center;
+      margin-bottom: 30px;
+    }
     .form-box {
       max-width: 400px;
       margin: 0 auto;
     }
-
     .input-field {
       padding: 12px;
       margin: 12px 0;
@@ -30,7 +27,6 @@
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-
     .form-box button {
       background-color: #2A6F74;
       color: white;
@@ -40,21 +36,17 @@
       cursor: pointer;
       font-size: 1rem;
     }
-
     .form-box button:hover {
       background-color: #1b4e50;
     }
-
     .error {
       color: #F76C5E;
       margin-top: 10px;
     }
-
     .signup-link {
       margin-top: 20px;
       font-size: 0.95rem;
     }
-
     .signup-link a {
       color: #2A6F74;
       text-decoration: underline;
@@ -65,18 +57,25 @@
       const form = document.getElementById("login-form");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const email = document.getElementById("email").value;
+        const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-        if (error) {
-          document.getElementById("login-error").textContent = error.message;
-        } else {
-          window.location.href = "index.html";
+          if (error) {
+            document.getElementById("login-error").textContent = error.message;
+            return;
+          }
+
+          if (data.user) {
+            window.location.href = "index.html";
+          } else {
+            document.getElementById("login-error").textContent = "Login failed.";
+          }
+        } catch (err) {
+          console.error("Unexpected error during login:", err);
+          document.getElementById("login-error").textContent = "An unexpected error occurred.";
         }
       });
     });
