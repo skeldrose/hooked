@@ -84,41 +84,48 @@
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
-        // Sign up user
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        try {
+          // Sign up user
+          const { data, error } = await supabase.auth.signUp({ email, password });
 
-        if (error) {
-          document.getElementById("signup-error").textContent = error.message;
-          return;
-        }
-
-        // Wait to get user data
-        const {
-          data: { user },
-          error: userError
-        } = await supabase.auth.getUser();
-
-        if (userError || !user) {
-          document.getElementById("signup-error").textContent = "User created but UID not available.";
-          return;
-        }
-
-        const userId = user.id;
-
-        // Insert username into 'profiles' table
-        if (userId && username) {
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .insert([{ id: userId, username }]);
-
-          if (profileError) {
-            document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+          if (error) {
+            document.getElementById("signup-error").textContent = error.message;
             return;
           }
-        }
 
-        alert("✅ Account created! Check your email to confirm.");
-        window.location.href = "login.html";
+          // Fetch the user info freshly to get user ID
+          const {
+            data: { user },
+            error: userError
+          } = await supabase.auth.getUser();
+
+          if (userError || !user) {
+            document.getElementById("signup-error").textContent = "User created but UID not available.";
+            return;
+          }
+
+          const userId = user.id;
+
+          // Insert username into 'profiles' table
+          if (userId && username) {
+            const { error: profileError } = await supabase
+              .from("profiles")
+              .insert([{ id: userId, username }]);
+
+            if (profileError) {
+              console.error("Failed to save username:", profileError);
+              document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+              return;
+            }
+          }
+
+          alert("✅ Account created! Check your email to confirm.");
+          window.location.href = "login.html";
+
+        } catch (err) {
+          console.error("Unexpected error during signup:", err);
+          document.getElementById("signup-error").textContent = "An unexpected error occurred.";
+        }
       });
     });
   </script>
