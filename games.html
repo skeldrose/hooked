@@ -4,18 +4,42 @@
   <meta charset="UTF-8" />
   <title>Games - Hooked?</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js"></script>
+  <script>
+    // Redirect to login if not authenticated
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (!data.user) {
+        window.location.href = "login.html";
+      } else {
+        document.addEventListener("DOMContentLoaded", () => {
+          const email = data.user.email;
+          const welcomeEl = document.getElementById("user-welcome");
+          if (welcomeEl) {
+            welcomeEl.textContent = `Welcome: ${email}`;
+          }
+        });
+      }
+    });
+  </script>
 </head>
 <body>
 
-  <nav>
-    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo" />
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="games.html">Games</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="quiz.html">Quiz</a></li>
-    </ul>
-  </nav>
+<nav>
+  <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo" />
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="quiz.html">Quiz</a></li>
+  </ul>
+  <div style="margin-left: auto; padding-right: 20px; display: flex; align-items: center; gap: 10px;">
+    <span id="user-welcome" style="font-weight: bold; color: #2A6F74;"></span>
+    <button id="logout-btn" style="background-color: #F76C5E; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+      Logout
+    </button>
+  </div>
+</nav>
 
   <main class="games">
     <h1>Spot the Phish 🕵️‍♀️</h1>
@@ -29,7 +53,7 @@
       <p>We're working on new interactive challenges to keep you sharp and phishing-aware.</p>
       <p>Your input is valued and helps keep people phishing aware!</p>
 
-<a href="https://forms.cloud.microsoft/r/amkh6kNpzY" class="survey-button" target="_blank">Tell Us</a>
+      <a href="https://forms.cloud.microsoft/r/amkh6kNpzY" class="survey-button" target="_blank">Tell Us</a>
 
       <p style="margin-top: 20px; color: #2A6F74;">
         Or scan the QR code below:
@@ -45,5 +69,30 @@
     <p>Created as part of a final year project at The Open University</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="supabase.js"></script>
+<script>
+  supabase.auth.getUser().then(async ({ data, error }) => {
+    if (!data.user) {
+      window.location.href = "login.html";
+    } else {
+      const userId = data.user.id;
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", userId)
+        .single();
+
+      if (profile && profile.username) {
+        document.getElementById("user-welcome").textContent = `Welcome: ${profile.username}`;
+      }
+
+      document.getElementById("logout-btn").addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        window.location.href = "login.html";
+      });
+    }
+  });
+</script>
 </body>
 </html>

@@ -2,8 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>resources - Hooked?</title>
+  <title>Resources - Hooked?</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js"></script>
+  <script>
+    supabase.auth.getUser().then(async ({ data, error }) => {
+      if (!data.user) {
+        window.location.href = "login.html";
+      } else {
+        const userId = data.user.id;
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", userId)
+          .single();
+
+        if (profile && profile.username) {
+          document.getElementById("user-welcome").textContent = `Welcome: ${profile.username}`;
+        }
+
+        document.getElementById("logout-btn").addEventListener("click", async () => {
+          await supabase.auth.signOut();
+          window.location.href = "login.html";
+        });
+      }
+    });
+  </script>
 </head>
 <body>
   <nav>
@@ -14,11 +39,17 @@
       <li><a href="resources.html">Resources</a></li>
       <li><a href="quiz.html">Quiz</a></li>
     </ul>
+    <div style="margin-left: auto; padding-right: 20px; display: flex; align-items: center; gap: 10px;">
+      <span id="user-welcome" style="font-weight: bold; color: #2A6F74;"></span>
+      <button id="logout-btn" style="background-color: #F76C5E; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+        Logout
+      </button>
+    </div>
   </nav>
 
-  <main>
-    <h1>Resources Page</h1>
-    <p>This is where phishing resources will go.</p>
+  <main style="padding: 40px 20px; text-align: center;">
+    <h1 style="color: #2A6F74;">Phishing Awareness Resources</h1>
+    <p style="font-size: 1.1rem;">This is where phishing resources will go. You’ll find helpful articles, downloads, and tips to protect yourself from common phishing threats.</p>
   </main>
 
   <footer>

@@ -4,6 +4,23 @@
   <meta charset="UTF-8">
   <title>Spot the Phish - Start | Hooked?</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="supabase.js"></script>
+<script>
+  supabase.auth.getUser().then(({ data, error }) => {
+    if (!data.user) {
+      window.location.href = "login.html";
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        const email = data.user.email;
+        const welcomeEl = document.getElementById("user-welcome");
+        if (welcomeEl) {
+          welcomeEl.textContent = `Welcome: ${email}`;
+        }
+      });
+    }
+  });
+</script>
   <style>
     .start-container {
       text-align: center;

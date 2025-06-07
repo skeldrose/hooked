@@ -4,6 +4,23 @@
   <meta charset="UTF-8">
   <title>Spot the Phish! | Hooked?</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="supabase.js"></script>
+<script>
+  supabase.auth.getUser().then(({ data, error }) => {
+    if (!data.user) {
+      window.location.href = "login.html";
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        const email = data.user.email;
+        const welcomeEl = document.getElementById("user-welcome");
+        if (welcomeEl) {
+          welcomeEl.textContent = `Welcome: ${email}`;
+        }
+      });
+    }
+  });
+</script>
   <style>
     .game-container {
       text-align: center;
@@ -197,16 +214,7 @@
   </style>
 </head>
 <body>
-
-  <nav>
-    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="games.html">Games</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="quiz.html">Quiz</a></li>
-    </ul>
-  </nav>
+  <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
 
 <!-- Enlarge overlay -->
 <div id="enlarged-overlay" class="enlarged-overlay">
@@ -224,7 +232,6 @@
 
 <!-- Game area -->
 <main id="game-area" class="game-container" style="display: none;">
-  <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
   <h2>Spot the Phish!</h2>
   <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
   <p style="color: #2A6F74; font-size: 1rem;">🔍 Click the magnifying glass to enlarge an image</p>

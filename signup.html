@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js" defer></script>
+  <style>
+    .signup-container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .form-box {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .input-field {
+      padding: 12px;
+      margin: 12px 0;
+      width: 100%;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .form-box button {
+      background-color: #2A6F74;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .form-box button:hover {
+      background-color: #1b4e50;
+    }
+
+    .error {
+      color: #F76C5E;
+      margin-top: 10px;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+
+    .login-link a {
+      color: #2A6F74;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="signup-container">
+    <h2>Create your Hooked? account</h2>
+    <p>Sign up to track your progress and scores.</p>
+
+    <form id="signup-form" class="form-box">
+      <input type="text" id="username" class="input-field" placeholder="Username" required>
+      <input type="email" id="email" class="input-field" placeholder="Email" required>
+      <input type="password" id="password" class="input-field" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+      <div id="signup-error" class="error"></div>
+      <div class="login-link">
+        Already have an account? <a href="login.html">Log in here</a>
+      </div>
+    </form>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("signup-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        // Sign up user
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+          document.getElementById("signup-error").textContent = error.message;
+        } else {
+          const userId = data.user?.id;
+
+          // Insert username into 'profiles' table
+          if (userId && username) {
+            const { error: profileError } = await supabase
+              .from("profiles")
+              .insert([{ id: userId, username }]);
+
+            if (profileError) {
+              document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+              return;
+            }
+          }
+
+          alert("✅ Account created! Check your email to confirm.");
+          window.location.href = "login.html";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

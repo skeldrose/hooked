@@ -4,6 +4,31 @@
   <meta charset="UTF-8" />
   <title>Phishing Awareness Quiz</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase.js"></script>
+  <script>
+    supabase.auth.getUser().then(async ({ data, error }) => {
+      if (!data.user) {
+        window.location.href = "login.html";
+      } else {
+        const userId = data.user.id;
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", userId)
+          .single();
+
+        if (profile && profile.username) {
+          document.getElementById("user-welcome").textContent = `Welcome: ${profile.username}`;
+        }
+
+        document.getElementById("logout-btn").addEventListener("click", async () => {
+          await supabase.auth.signOut();
+          window.location.href = "login.html";
+        });
+      }
+    });
+  </script>
   <style>
     .quiz-container {
       max-width: 900px;
@@ -12,20 +37,41 @@
       text-align: center;
     }
 
+    .question-box {
+      margin: 30px auto;
+      text-align: left;
+      max-width: 700px;
+    }
+
     .question-box h2 {
+      color: #F76C5E;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .question-box p {
+      font-weight: bold;
       color: #2A6F74;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      margin-top: 10px;
     }
 
     .options label {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+      font-size: 1rem;
+      color: #2A6F74;
       text-align: left;
-      margin: 10px 0;
-      padding-left: 20px;
-      cursor: pointer;
     }
 
     .options input[type="radio"] {
-      margin-right: 10px;
+      margin: 0;
     }
 
     .button-row {
@@ -45,6 +91,18 @@
 
     .quiz-btn:hover {
       background-color: #d95c4d;
+    }
+
+    .exit-btn {
+      background-color: #2A6F74;
+    }
+
+    .exit-btn:hover {
+      background-color: #21595f;
+    }
+
+    .exit-row {
+      margin-top: 10px;
     }
 
     #timer-display {
@@ -68,6 +126,12 @@
       <li><a href="resources.html">Resources</a></li>
       <li><a href="quiz.html">Quiz</a></li>
     </ul>
+    <div style="margin-left: auto; padding-right: 20px; display: flex; align-items: center; gap: 10px;">
+      <span id="user-welcome" style="font-weight: bold; color: #2A6F74;"></span>
+      <button id="logout-btn" style="background-color: #F76C5E; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+        Logout
+      </button>
+    </div>
   </nav>
 
   <main class="quiz-container">
@@ -81,8 +145,11 @@
       <div id="timer-display"></div>
       <div id="question-container"></div>
       <div class="button-row">
+        <button id="prev-btn" class="quiz-btn" onclick="prevQuestion()" style="display: none;">Previous</button>
         <button id="next-btn" class="quiz-btn" onclick="nextQuestion()">Next</button>
-        <button class="quiz-btn" onclick="confirmExit()">Exit</button>
+      </div>
+      <div class="exit-row">
+        <button class="quiz-btn exit-btn" onclick="confirmExit()">Exit</button>
       </div>
     </div>
 
@@ -103,109 +170,28 @@
   </footer>
 
   <script>
-const questions = [
-  {
-    question: "What is a common sign of a phishing email?",
-    options: ["A personal greeting with your full name", "An email from a known contact", "Poor spelling and grammar", "A secure URL starting with https://"],
-    answer: 2
-  },
-  {
-    question: "What should you do if you receive a suspicious email?",
-    options: ["Open it to see what it says", "Forward it to everyone you know", "Click any links to test them", "Report it and delete it"],
-    answer: 3
-  },
-  {
-    question: "Phishing emails often create a sense of ______.",
-    options: ["Humour", "Urgency", "Relief", "Celebration"],
-    answer: 1
-  },
-  {
-    question: "What does HTTPS mean in a web address?",
-    options: ["High Tech Page Server", "HyperText Transfer Protocol Secure", "Hacked Tech Protocol System", "Hosting Transfer Point Site"],
-    answer: 1
-  },
-  {
-    question: "Why might a phishing email impersonate a trusted company?",
-    options: ["To make it easier to understand", "To entertain users", "To trick recipients into trusting it", "To offer real deals"],
-    answer: 2
-  },
-  {
-    question: "Which of these is a safe practice?",
-    options: ["Clicking links from unknown senders", "Entering passwords on any website", "Using multi-factor authentication", "Ignoring software updates"],
-    answer: 2
-  },
-  {
-    question: "What’s a red flag in a sender’s email address?",
-    options: ["It matches your contacts", "It uses a familiar domain", "It has odd characters or misspellings", "It ends in .com"],
-    answer: 2
-  },
-  {
-    question: "Phishing can happen through:",
-    options: ["Emails only", "Text messages only", "Phone calls only", "All of the above"],
-    answer: 3
-  },
-  {
-    question: "If a link looks suspicious, what should you do?",
-    options: ["Click it quickly", "Hover to preview the URL", "Forward it", "Bookmark it"],
-    answer: 1
-  },
-  {
-    question: "What does a phishing website usually try to steal?",
-    options: ["Music preferences", "Bank details and passwords", "Favourite colour", "Weather info"],
-    answer: 1
-  },
-  {
-    question: "Which of these messages is likely a phishing attempt?",
-    options: ["Your account has been suspended! Click here to reactivate", "Weekly newsletter", "Thank you for your purchase", "Your subscription is due next month"],
-    answer: 0
-  },
-  {
-    question: "What does multi-factor authentication do?",
-    options: ["Makes your password longer", "Allows access from multiple devices", "Adds extra layers of security", "Sends your data to backup"],
-    answer: 2
-  },
-  {
-    question: "Which type of file attachment might be suspicious?",
-    options: [".jpg", ".txt", ".exe", ".doc"],
-    answer: 2
-  },
-  {
-    question: "How often should you change your passwords?",
-    options: ["Every 10 years", "Only if hacked", "Never", "Regularly and when suspicious activity is seen"],
-    answer: 3
-  },
-  {
-    question: "What’s a safe way to check if a message is genuine?",
-    options: ["Call the sender using a known number", "Reply directly to the message", "Click the link in the message", "Ignore it completely"],
-    answer: 0
-  },
-  {
-    question: "Why do attackers use fake logos and branding?",
-    options: ["To be creative", "To bypass spam filters", "To appear trustworthy", "To sell products"],
-    answer: 2
-  },
-  {
-    question: "Which of these passwords is strongest?",
-    options: ["Password123", "Summer2022", "G!v3m3Str0nGp@ss!", "qwerty"],
-    answer: 2
-  },
-  {
-    question: "Phishing attacks are:",
-    options: ["Always from other countries", "Completely avoidable", "Targeted or random", "Only against businesses"],
-    answer: 2
-  },
-  {
-    question: "You clicked a phishing link. What should you do first?",
-    options: ["Ignore it", "Reset your password and report it", "Turn off your computer", "Unplug your router"],
-    answer: 1
-  },
-  {
-    question: "Where can you learn more about phishing prevention?",
-    options: ["Gaming sites", "Fashion blogs", "National Cyber Security Centre", "Social media"],
-    answer: 2
-  }
-];
-
+    const questions = [
+      { question: "What is a common sign of a phishing email?", options: ["A personal greeting with your full name", "An email from a known contact", "Poor spelling and grammar", "A secure URL starting with https://"], answer: 2 },
+      { question: "What should you do if you receive a suspicious email?", options: ["Open it to see what it says", "Forward it to everyone you know", "Click any links to test them", "Report it and delete it"], answer: 3 },
+      { question: "Phishing emails often create a sense of ______.", options: ["Humour", "Urgency", "Relief", "Celebration"], answer: 1 },
+      { question: "What does HTTPS mean in a web address?", options: ["High Tech Page Server", "HyperText Transfer Protocol Secure", "Hacked Tech Protocol System", "Hosting Transfer Point Site"], answer: 1 },
+      { question: "Why might a phishing email impersonate a trusted company?", options: ["To make it easier to understand", "To entertain users", "To trick recipients into trusting it", "To offer real deals"], answer: 2 },
+      { question: "Which of these is a safe practice?", options: ["Clicking links from unknown senders", "Entering passwords on any website", "Using multi-factor authentication", "Ignoring software updates"], answer: 2 },
+      { question: "What’s a red flag in a sender’s email address?", options: ["It matches your contacts", "It uses a familiar domain", "It has odd characters or misspellings", "It ends in .com"], answer: 2 },
+      { question: "Phishing can happen through:", options: ["Emails only", "Text messages only", "Phone calls only", "All of the above"], answer: 3 },
+      { question: "If a link looks suspicious, what should you do?", options: ["Click it quickly", "Hover to preview the URL", "Forward it", "Bookmark it"], answer: 1 },
+      { question: "What does a phishing website usually try to steal?", options: ["Music preferences", "Bank details and passwords", "Favourite colour", "Weather info"], answer: 1 },
+      { question: "Which of these messages is likely a phishing attempt?", options: ["Your account has been suspended! Click here to reactivate", "Weekly newsletter", "Thank you for your purchase", "Your subscription is due next month"], answer: 0 },
+      { question: "What does multi-factor authentication do?", options: ["Makes your password longer", "Allows access from multiple devices", "Adds extra layers of security", "Sends your data to backup"], answer: 2 },
+      { question: "Which type of file attachment might be suspicious?", options: [".jpg", ".txt", ".exe", ".doc"], answer: 2 },
+      { question: "How often should you change your passwords?", options: ["Every 10 years", "Only if hacked", "Never", "Regularly and when suspicious activity is seen"], answer: 3 },
+      { question: "What’s a safe way to check if a message is genuine?", options: ["Call the sender using a known number", "Reply directly to the message", "Click the link in the message", "Ignore it completely"], answer: 0 },
+      { question: "Why do attackers use fake logos and branding?", options: ["To be creative", "To bypass spam filters", "To appear trustworthy", "To sell products"], answer: 2 },
+      { question: "Which of these passwords is strongest?", options: ["Password123", "Summer2022", "G!v3m3Str0nGp@ss!", "qwerty"], answer: 2 },
+      { question: "Phishing attacks are:", options: ["Always from other countries", "Completely avoidable", "Targeted or random", "Only against businesses"], answer: 2 },
+      { question: "You clicked a phishing link. What should you do first?", options: ["Ignore it", "Reset your password and report it", "Turn off your computer", "Unplug your router"], answer: 1 },
+      { question: "Where can you learn more about phishing prevention?", options: ["Gaming sites", "Fashion blogs", "National Cyber Security Centre", "Social media"], answer: 2 }
+    ];
 
     let current = 0;
     let answers = [];
@@ -252,6 +238,8 @@ const questions = [
           </div>
         </div>
       `;
+
+      document.getElementById("prev-btn").style.display = current === 0 ? "none" : "inline-block";
     }
 
     function nextQuestion() {
@@ -260,13 +248,18 @@ const questions = [
         alert("Please select an answer before continuing.");
         return;
       }
-
       answers[current] = parseInt(selected.value);
       current++;
-
       if (current >= questions.length) {
         finishQuiz();
       } else {
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (current > 0) {
+        current--;
         loadQuestion();
       }
     }
