@@ -6,23 +6,6 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="supabase.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const { data: { user }, error } = await supabase.auth.getUser();
-
-    if (error || !user) {
-      // No logged-in user, redirect to login
-      window.location.href = "login.html";
-      return;
-    }
-
-    // User is logged in, update welcome message if present
-    const welcomeEl = document.getElementById("user-welcome");
-    if (welcomeEl) {
-      welcomeEl.textContent = `Welcome: ${user.email}`; // Or username if you store it somewhere
-    }
-  });
-</script>
 </head>
 <body>
 
