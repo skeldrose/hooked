@@ -2,96 +2,125 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login | Hooked?</title>
+  <title>Sign Up | Hooked?</title>
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="supabase.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js" defer></script>
   <style>
-    .login-container { text-align: center; padding: 60px 20px; }
-    .form-box { max-width: 400px; margin: 0 auto; }
-    .input-field { padding: 12px; margin: 12px 0; width: 100%; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; }
-    .form-box button { background-color: #2A6F74; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
-    .form-box button:hover { background-color: #1b4e50; }
-    .error { color: #F76C5E; margin-top: 10px; }
-    .signup-link { margin-top: 20px; font-size: 0.95rem; }
-    .signup-link a { color: #2A6F74; text-decoration: underline; }
+    .signup-container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .form-box {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .input-field {
+      padding: 12px;
+      margin: 12px 0;
+      width: 100%;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .form-box button {
+      background-color: #2A6F74;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .form-box button:hover {
+      background-color: #1b4e50;
+    }
+    .error {
+      color: #F76C5E;
+      margin-top: 10px;
+    }
+    .login-link {
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+    .login-link a {
+      color: #2A6F74;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
-<main class="login-container">
-  <h2>Login to Hooked?</h2>
+  <main class="signup-container">
+    <h2>Create your Hooked? account</h2>
+    <p>Sign up to track your progress and scores.</p>
 
-  <form id="login-form" class="form-box">
-    <input type="text" id="username" class="input-field" placeholder="Username" required />
-    <input type="password" id="password" class="input-field" placeholder="Password" required />
-    <button type="submit">Log In</button>
-    <div id="login-error" class="error"></div>
-    <div class="signup-link">
-      Don't have an account? <a href="signup.html">Sign up here</a>
-    </div>
-  </form>
-</main>
+    <form id="signup-form" class="form-box">
+      <input type="text" id="username" class="input-field" placeholder="Username" required>
+      <input type="email" id="email" class="input-field" placeholder="Email" required>
+      <input type="password" id="password" class="input-field" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+      <div id="signup-error" class="error"></div>
+      <div class="login-link">
+        Already have an account? <a href="login.html">Log in here</a>
+      </div>
+    </form>
+  </main>
 
-<footer>
-  <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo" />
-  <p>© 2025 Hooked? | Phishing Awareness Platform</p>
-  <p>Created as part of a final year project at The Open University</p>
-</footer>
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("login-form");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("signup-form");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
-    if (!username || !password) {
-      document.getElementById("login-error").textContent = "Please enter username and password.";
-      return;
-    }
+        try {
+          // Sign up user and immediately get user object
+          const { data, error } = await supabase.auth.signUp({ email, password });
 
-    try {
-      // Fetch user row by username
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .single();
+          if (error) {
+            document.getElementById("signup-error").textContent = error.message;
+            return;
+          }
 
-      if (error) {
-        document.getElementById("login-error").textContent = "User not found.";
-        return;
-      }
+          const userId = data.user?.id;
 
-      if (!data) {
-        document.getElementById("login-error").textContent = "User not found.";
-        return;
-      }
+          if (!userId) {
+            document.getElementById("signup-error").textContent = "User ID not available.";
+            return;
+          }
 
-      // Compare hashed password
-      const isValid = await bcrypt.compare(password, data.password_hash);
-      if (!isValid) {
-        document.getElementById("login-error").textContent = "Incorrect password.";
-        return;
-      }
+          // Insert username into 'profiles' table
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert([{ id: userId, username }]);
 
-      // Login successful — store user info or token (you'll need to handle sessions)
-      // For now, redirect
-      alert("✅ Login successful!");
-      window.location.href = "index.html";
+          if (profileError) {
+            console.error("Failed to save username:", profileError);
+            document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+            return;
+          }
 
-    } catch (err) {
-      console.error("Unexpected error during login:", err);
-      document.getElementById("login-error").textContent = "An unexpected error occurred.";
-    }
-  });
-});
-</script>
+          alert("✅ Account created! You are now logged in.");
+          window.location.href = "index.html";
+
+        } catch (err) {
+          console.error("Unexpected error during signup:", err);
+          document.getElementById("signup-error").textContent = "An unexpected error occurred.";
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
