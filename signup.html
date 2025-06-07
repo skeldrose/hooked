@@ -85,7 +85,7 @@
         const password = document.getElementById("password").value;
 
         try {
-          // Sign up user
+          // Sign up user and immediately get user object
           const { data, error } = await supabase.auth.signUp({ email, password });
 
           if (error) {
@@ -93,34 +93,27 @@
             return;
           }
 
-          // Fetch the user info freshly to get user ID
-          const {
-            data: { user },
-            error: userError
-          } = await supabase.auth.getUser();
+          // Use data.user directly (no email confirmation check)
+          const userId = data.user?.id;
 
-          if (userError || !user) {
-            document.getElementById("signup-error").textContent = "User created but UID not available.";
+          if (!userId) {
+            document.getElementById("signup-error").textContent = "User ID not available.";
             return;
           }
 
-          const userId = user.id;
-
           // Insert username into 'profiles' table
-          if (userId && username) {
-            const { error: profileError } = await supabase
-              .from("profiles")
-              .insert([{ id: userId, username }]);
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert([{ id: userId, username }]);
 
-            if (profileError) {
-              console.error("Failed to save username:", profileError);
-              document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
-              return;
-            }
+          if (profileError) {
+            console.error("Failed to save username:", profileError);
+            document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+            return;
           }
 
-          alert("✅ Account created! Check your email to confirm.");
-          window.location.href = "login.html";
+          alert("✅ Account created! You are now logged in.");
+          window.location.href = "index.html";
 
         } catch (err) {
           console.error("Unexpected error during signup:", err);
