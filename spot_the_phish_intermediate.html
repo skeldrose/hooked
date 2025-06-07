@@ -7,17 +7,19 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="supabase.js"></script>
 <script>
-  supabase.auth.getUser().then(({ data, error }) => {
-    if (!data.user) {
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      // No logged-in user, redirect to login
       window.location.href = "login.html";
-    } else {
-      document.addEventListener("DOMContentLoaded", () => {
-        const email = data.user.email;
-        const welcomeEl = document.getElementById("user-welcome");
-        if (welcomeEl) {
-          welcomeEl.textContent = `Welcome: ${email}`;
-        }
-      });
+      return;
+    }
+
+    // User is logged in, update welcome message if present
+    const welcomeEl = document.getElementById("user-welcome");
+    if (welcomeEl) {
+      welcomeEl.textContent = `Welcome: ${user.email}`; // Or username if you store it somewhere
     }
   });
 </script>

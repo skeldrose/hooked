@@ -6,29 +6,23 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="supabase.js"></script>
-  <script>
-    supabase.auth.getUser().then(async ({ data, error }) => {
-      if (!data.user) {
-        window.location.href = "login.html";
-      } else {
-        const userId = data.user.id;
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username")
-          .eq("id", userId)
-          .single();
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-        if (profile && profile.username) {
-          document.getElementById("user-welcome").textContent = `Welcome: ${profile.username}`;
-        }
+    if (error || !user) {
+      // No logged-in user, redirect to login
+      window.location.href = "login.html";
+      return;
+    }
 
-        document.getElementById("logout-btn").addEventListener("click", async () => {
-          await supabase.auth.signOut();
-          window.location.href = "login.html";
-        });
-      }
-    });
-  </script>
+    // User is logged in, update welcome message if present
+    const welcomeEl = document.getElementById("user-welcome");
+    if (welcomeEl) {
+      welcomeEl.textContent = `Welcome: ${user.email}`; // Or username if you store it somewhere
+    }
+  });
+</script>
 </head>
 <body>
   <nav>
