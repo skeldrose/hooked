@@ -11,12 +11,10 @@
       text-align: center;
       padding: 60px 20px;
     }
-
     .form-box {
       max-width: 400px;
       margin: 0 auto;
     }
-
     .input-field {
       padding: 12px;
       margin: 12px 0;
@@ -25,7 +23,6 @@
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-
     .form-box button {
       background-color: #2A6F74;
       color: white;
@@ -35,21 +32,17 @@
       cursor: pointer;
       font-size: 1rem;
     }
-
     .form-box button:hover {
       background-color: #1b4e50;
     }
-
     .error {
       color: #F76C5E;
       margin-top: 10px;
     }
-
     .login-link {
       margin-top: 20px;
       font-size: 0.95rem;
     }
-
     .login-link a {
       color: #2A6F74;
       text-decoration: underline;
@@ -96,24 +89,36 @@
 
         if (error) {
           document.getElementById("signup-error").textContent = error.message;
-        } else {
-          const userId = data.user?.id;
-
-          // Insert username into 'profiles' table
-          if (userId && username) {
-            const { error: profileError } = await supabase
-              .from("profiles")
-              .insert([{ id: userId, username }]);
-
-            if (profileError) {
-              document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
-              return;
-            }
-          }
-
-          alert("✅ Account created! Check your email to confirm.");
-          window.location.href = "login.html";
+          return;
         }
+
+        // Wait to get user data
+        const {
+          data: { user },
+          error: userError
+        } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          document.getElementById("signup-error").textContent = "User created but UID not available.";
+          return;
+        }
+
+        const userId = user.id;
+
+        // Insert username into 'profiles' table
+        if (userId && username) {
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert([{ id: userId, username }]);
+
+          if (profileError) {
+            document.getElementById("signup-error").textContent = "Signed up, but failed to save username.";
+            return;
+          }
+        }
+
+        alert("✅ Account created! Check your email to confirm.");
+        window.location.href = "login.html";
       });
     });
   </script>
