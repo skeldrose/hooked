@@ -53,11 +53,11 @@
 
   <main class="login-container">
     <h2>Login to Hooked?</h2>
-    <p>Enter your email and password to continue.</p>
+    <p>Enter your username and password to continue.</p>
 
     <form id="login-form" class="form-box">
-      <input type="email" id="email" name="email" class="input-field" placeholder="Email" autocomplete="email" required>
-      <input type="password" id="password" name="password" class="input-field" placeholder="Password" autocomplete="current-password" required>
+      <input type="text" id="username" name="username" class="input-field" placeholder="Username" required autocomplete="username" />
+      <input type="password" id="password" name="password" class="input-field" placeholder="Password" required autocomplete="current-password" />
       <button type="submit">Log In</button>
       <div id="login-error" class="error"></div>
       <div class="signup-link">
@@ -79,23 +79,31 @@
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
 
         try {
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          // Fetch user by username and validate password (you'll need a backend endpoint or custom function)
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('username', username)
+            .single();
 
-          if (error) {
-            document.getElementById("login-error").textContent = error.message;
+          if (error || !data) {
+            document.getElementById("login-error").textContent = "Invalid username or password.";
             return;
           }
 
-          if (data.user) {
-            // Login successful - redirect to main page
-            window.location.href = "index.html";
-          } else {
-            document.getElementById("login-error").textContent = "Login failed.";
+          if (data.password_hash !== password) {  // Plaintext check: replace with proper hashing in production
+            document.getElementById("login-error").textContent = "Invalid username or password.";
+            return;
           }
+
+          // Login successful - set user session however you want, then redirect
+          alert("✅ Login successful!");
+          window.location.href = "index.html";
+
         } catch (err) {
           console.error("Unexpected error during login:", err);
           document.getElementById("login-error").textContent = "An unexpected error occurred.";
