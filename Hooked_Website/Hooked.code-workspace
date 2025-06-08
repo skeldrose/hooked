@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Hooked_Backend"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Hoooked_Website"
+	}
+}
