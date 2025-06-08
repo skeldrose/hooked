@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <title>Spot the Phish! | Hooked?</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="supabase.js"></script>
   <style>
     .game-container {
       text-align: center;
@@ -199,7 +197,6 @@
   </style>
 </head>
 <body>
-  <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
 
 <!-- Enlarge overlay -->
 <div id="enlarged-overlay" class="enlarged-overlay">
@@ -217,6 +214,7 @@
 
 <!-- Game area -->
 <main id="game-area" class="game-container" style="display: none;">
+  <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
   <h2>Spot the Phish!</h2>
   <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
   <p style="color: #2A6F74; font-size: 1rem;">🔍 Click the magnifying glass to enlarge an image</p>
@@ -439,14 +437,35 @@
     modal.style.display = "block";
   }
 
-  function showGameComplete() {
-    const total = rounds.length;
-    finalScoreTitle.textContent = `Your Score: ${score}/${total}`;
-    finalScoreMessage.textContent = score >= 4
-      ? '🎉 Great job! You passed the game!'
-      : '❌ Game Over. Try again!';
-    completeModal.style.display = "block";
+function showGameComplete() {
+  const total = rounds.length;
+  finalScoreTitle.textContent = `Your Score: ${score}/${total}`;
+  finalScoreMessage.textContent = score >= 4
+    ? '🎉 Great job! You passed the game!'
+    : '❌ Game Over. Try again!';
+  completeModal.style.display = "block";
+
+  // ✅ Submit score to backend
+  const username = localStorage.getItem("hookedUser");
+  if (username) {
+    const payload = {
+      username,
+      score: Math.round((score / total) * 100),
+      mode: "Analyst",            // ⬅️ Only change this line!
+      type: "Spot the Phish",     // ✅ To display cleanly on your scores table
+      timestamp: new Date().toLocaleString()
+    };
+
+    fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => console.log("✅ Analyst score saved:", data))
+    .catch(err => console.error("❌ Error saving Analyst score:", err));
   }
+}
 
   leftImage.addEventListener("click", () => checkAnswer("left"));
   rightImage.addEventListener("click", () => checkAnswer("right"));
@@ -485,6 +504,15 @@
     <p>© 2025 Hooked? | Phishing Awareness Platform</p>
     <p>Created as part of a final year project at The Open University</p>
   </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
   
 </body>
 </html>

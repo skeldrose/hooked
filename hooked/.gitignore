@@ -1,0 +1,15 @@
+# Node backend
+/server/node_modules
+/server/users.json
+
+# VSCode and Mac system files
+.vscode/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+Thumbs.db
+ehthumbs.db

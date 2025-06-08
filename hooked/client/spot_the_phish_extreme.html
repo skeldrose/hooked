@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <title>Spot the Phish! | Hooked?</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="supabase.js"></script>
   <style>
     .game-container {
       text-align: center;
@@ -27,7 +25,7 @@
       width: 100%;
     }
     .timer-animate {
-      animation: shrinkBar 20s linear forwards;
+      animation: shrinkBar 7s linear forwards;
     }
     @keyframes shrinkBar {
       from { width: 100%; }
@@ -199,7 +197,6 @@
   </style>
 </head>
 <body>
-<button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
 
 <!-- Enlarge overlay -->
 <div id="enlarged-overlay" class="enlarged-overlay">
@@ -209,14 +206,15 @@
 
 <!-- Start screen -->
 <div id="level-intro" style="text-align: center; padding: 60px 20px;">
-  <h2 style="color: #2A6F74;">🟢 Level: Intern Mode (Easy)</h2>
-  <p style="color: #2A6F74;">You’ll have <strong>20 seconds</strong> to spot each phish.</p>
+  <h2 style="color: #2A6F74;"> 🔴 Level: SOC Commander (Extreme)</h2>
+  <p style="color: #2A6F74;">You’ll have <strong>7 seconds</strong> to spot each phish.</p>
   <p style="color: #2A6F74;">Score 50% or more to pass the game! 🎯</p>
   <button id="begin-btn" style="background-color: #F76C5E; color: white; font-size: 1.2rem; padding: 14px 32px; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);">Start Level</button>
 </div>
 
 <!-- Game area -->
 <main id="game-area" class="game-container" style="display: none;">
+  <button class="exit-button" onclick="document.getElementById('exit-confirm-modal').style.display='block'">Exit</button>
   <h2>Spot the Phish!</h2>
   <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
   <p style="color: #2A6F74; font-size: 1rem;">🔍 Click the magnifying glass to enlarge an image</p>
@@ -261,7 +259,7 @@
   </div>
 </div>
 <script>
-  const roundDuration = 20000;
+  const roundDuration = 7000;
   const rounds = [
     {
       phish: "images/PayPal_Phishing_Example.png",
@@ -439,14 +437,36 @@
     modal.style.display = "block";
   }
 
-  function showGameComplete() {
-    const total = rounds.length;
-    finalScoreTitle.textContent = `Your Score: ${score}/${total}`;
-    finalScoreMessage.textContent = score >= 4
-      ? '🎉 Great job! You passed the game!'
-      : '❌ Game Over. Try again!';
-    completeModal.style.display = "block";
+function showGameComplete() {
+  const total = rounds.length;
+  finalScoreTitle.textContent = `Your Score: ${score}/${total}`;
+  finalScoreMessage.textContent = score >= 4
+    ? '🎉 Great job! You passed the game!'
+    : '❌ Game Over. Try again!';
+  completeModal.style.display = "block";
+
+  // ✅ Submit score to backend
+  const username = localStorage.getItem("hookedUser");
+  if (username) {
+    const payload = {
+      username,
+      score: Math.round((score / total) * 100),
+      mode: "SOC Commander",       // ⬅️ Final STP difficulty name
+      type: "Spot the Phish",      // ⬅️ Ensures it's grouped under the same activity
+      timestamp: new Date().toLocaleString()
+    };
+
+    fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => console.log("✅ SOC Commander score saved:", data))
+    .catch(err => console.error("❌ Error saving SOC Commander score:", err));
   }
+}
+
 
   leftImage.addEventListener("click", () => checkAnswer("left"));
   rightImage.addEventListener("click", () => checkAnswer("right"));
@@ -486,5 +506,14 @@
     <p>Created as part of a final year project at The Open University</p>
   </footer>
 
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+  
 </body>
 </html>

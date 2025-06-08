@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Games - Hooked?</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="your_scores.html">Your Scores</a></li>
+    </ul>
+    <div class="nav-user" id="user-info"></div>
+  </nav>
+
+  <main class="games">
+    <h1>Spot the Phish 🕵️‍♀️</h1>
+    <p>Think you can spot a phishing email before it's too late?</p>
+    <a href="spot_the_phish_start.html" class="start-button">Spot the Phish</a>
+
+    <hr class="games-divider">
+
+    <section class="coming-soon" style="text-align: center; margin-top: 40px;">
+      <h2>More Games Coming Soon! 🎮</h2>
+      <p>We're working on new interactive challenges to keep you sharp and phishing-aware.</p>
+      <p>Your input is valued and helps keep people phishing aware!</p>
+
+<a href="https://forms.cloud.microsoft/r/amkh6kNpzY" class="survey-button" target="_blank">Tell Us</a>
+
+      <p style="margin-top: 20px; color: #2A6F74;">
+        Or scan the QR code below:
+      </p>
+
+      <img src="images/QR_Tell_Us.png" alt="QR Code for Tell Us Form" style="max-width: 180px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-top: 10px;">
+    </section>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("hookedUser");
+    const userInfoDiv = document.getElementById("user-info");
+
+    if (!username) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (userInfoDiv) {
+      userInfoDiv.innerHTML = `
+        <span class="welcome-text">Welcome,</span>
+        <span class="username-text">${username}</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      `;
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("hookedUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+
+</body>
+</html>
