@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spot the Phish - Start | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .start-container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .start-container h2 {
+      font-size: 2rem;
+      color: #2A6F74;
+    }
+
+    .start-container p {
+      font-size: 1.1rem;
+      color: #2A6F74;
+      margin: 20px 0;
+    }
+
+    .difficulty-btn {
+      display: inline-block;
+      background-color: transparent;
+      color: #2A6F74;
+      font-weight: bold;
+      border: 2px solid #F76C5E;
+      padding: 16px 28px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 12px;
+      box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+.difficulty-btn:hover {
+  background-color: #E0F1F1;
+  color: #2A6F74;
+  border-color: #2A6F74;
+  box-shadow: 0 4px 10px rgba(42, 111, 116, 0.15);
+  transform: translateY(-1px);
+}
+
+
+
+    .difficulty-label {
+      display: block;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 4px;
+      font-weight: normal;
+    }
+
+    .timer-placeholder {
+      margin-top: 40px;
+      font-size: 1.5rem;
+      color: #2A6F74;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+    </ul>
+    <!-- Welcome + Logout (top right) -->
+    <div class="nav-user" id="user-info"></div>
+  </nav>
+
+  <main class="start-container">
+    <h2>Welcome to Spot the Phish!</h2>
+    <p>Can you spot the phish in time? ⏳</p>
+    <p>Select your level to begin your mission 🕵️‍♀️</p>
+
+<div class="difficulty-grid">
+  <button class="difficulty-btn" onclick="window.location.href='spot_the_phish_easy.html'">
+    🟢 Intern
+    <span class="difficulty-label">(Easy)</span>
+    <span class="reaction-time">⏱️ You will have 20 seconds to react</span>
+  </button>
+
+  <button class="difficulty-btn" onclick="window.location.href='spot_the_phish_intermediate.html'">
+    🟡 Analyst
+    <span class="difficulty-label">(Intermediate)</span>
+    <span class="reaction-time">⏱️ You will have 15 seconds to react</span>
+  </button>
+
+  <button class="difficulty-btn" onclick="window.location.href='spot_the_phish_hard.html'">
+    🟠 Threat Hunter
+    <span class="difficulty-label">(Hard)</span>
+    <span class="reaction-time">⏱️ You will have 10 seconds to react</span>
+  </button>
+
+  <button class="difficulty-btn" onclick="window.location.href='spot_the_phish_extreme.html'">
+    🔴 SOC Commander
+    <span class="difficulty-label">(Extreme)</span>
+    <span class="reaction-time">⏱️ You will have 7 seconds to react</span>
+  </button>
+</div>
+
+
+
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+<!-- 🙋‍♀️ Welcome + Logout Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("hookedUser");
+    const userInfoDiv = document.getElementById("user-info");
+
+    if (username && userInfoDiv) {
+      userInfoDiv.innerHTML = `
+        <span class="welcome-text">Welcome,</span>
+        <span class="username-text">${username}</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      `;
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("hookedUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>

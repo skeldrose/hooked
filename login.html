@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .login-container {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .form-box {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .input-field {
+      padding: 12px;
+      margin: 12px 0;
+      width: 100%;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .form-box button {
+      background-color: #2A6F74;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .form-box button:hover {
+      background-color: #1b4e50;
+    }
+    .error {
+      color: #F76C5E;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="login-container">
+    <h2>Login to Hooked?</h2>
+    <p>Enter your username to continue.</p>
+
+    <form id="login-form" class="form-box">
+      <input type="text" id="username" name="username" class="input-field" placeholder="Username" required autocomplete="off" />
+      <button type="submit">Start</button>
+      <div id="login-error" class="error"></div>
+    </form>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked? Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("login-form");
+      const errorDiv = document.getElementById("login-error");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value.trim();
+
+        if (!username) {
+          errorDiv.textContent = "Username is required.";
+          return;
+        }
+
+        try {
+          const response = await fetch("https://hooked-backend-frgz.onrender.com/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem("hookedUser", username);
+            alert(data.message); // "New user created" or "Welcome back"
+            window.location.href = "index.html"; // Change this if your next page is different
+          } else {
+            errorDiv.textContent = data.error || "Something went wrong.";
+          }
+        } catch (err) {
+          console.error("Login error:", err);
+          errorDiv.textContent = "Server error. Please try again.";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

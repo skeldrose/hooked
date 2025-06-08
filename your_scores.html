@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Scores! | Hooked?</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .scores-container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+      text-align: center;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .scores-container h2 {
+      color: #2A6F74;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 30px;
+      font-size: 1rem;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    thead th {
+      background-color: #F76C5E;
+      color: white;
+      padding: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    tbody td {
+      padding: 14px;
+      color: #2A6F74;
+      background-color: #fdfdfd;
+    }
+
+    tbody tr:nth-child(even) td {
+      background-color: #f7fafa;
+    }
+
+    tbody tr:hover td {
+      background-color: #f0f0f0;
+    }
+
+    td:first-child, th:first-child {
+      border-top-left-radius: 12px;
+    }
+
+    td:last-child, th:last-child {
+      border-top-right-radius: 12px;
+    }
+
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody td {
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #999;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="your_scores.html">Your Scores</a></li>
+    </ul>
+    <div class="nav-user" id="user-info"></div>
+  </nav>
+
+  <main class="scores-container">
+    <h2>📊 Your Scores</h2>
+    <table id="scores-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Level</th>
+          <th>Score</th>
+          <th>Time Taken</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo">
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const username = localStorage.getItem("hookedUser");
+      const userInfoDiv = document.getElementById("user-info");
+      const tbody = document.querySelector("#scores-table tbody");
+
+      if (!username) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      if (userInfoDiv) {
+        userInfoDiv.innerHTML = `
+          <span class="welcome-text">Welcome,</span>
+          <span class="username-text">${username}</span>
+          <button class="logout-btn" onclick="logout()">Logout</button>
+        `;
+      }
+
+      fetch(`https://hooked-backend-frgz.onrender.com/api/scores/${username}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.scores || data.scores.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5">No scores yet. Play some games!</td></tr>`;
+            return;
+          }
+
+          data.scores.forEach(score => {
+            const type = score.type || (score.mode?.toLowerCase().includes("quiz") ? "Quiz" : "Spot the Phish");
+
+            let timeTakenDisplay = "N/A";
+            if (typeof score.timeTaken === "number") {
+              const mins = Math.floor(score.timeTaken / 60);
+              const secs = score.timeTaken % 60;
+              timeTakenDisplay = `${mins}m ${secs}s`;
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td data-label="Type">${type}</td>
+              <td data-label="Mode">${score.mode}</td>
+              <td data-label="Score">${score.score}</td>
+              <td data-label="Time Taken">${timeTakenDisplay}</td>
+              <td data-label="Date">${new Date(score.timestamp).toLocaleString()}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(err => {
+          console.error("❌ Failed to load scores:", err);
+          tbody.innerHTML = `<tr><td colspan="5">Error loading scores</td></tr>`;
+        });
+    });
+
+    function logout() {
+      localStorage.removeItem("hookedUser");
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

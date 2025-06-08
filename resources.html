@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>resources - Hooked?</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  
+  <nav>
+    <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html">Games</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="your_scores.html">Your Scores</a></li>
+    </ul>
+    <div class="nav-user" id="user-info"></div>
+  </nav>
+
+  <main>
+    <h1>Resources Page</h1>
+    <p>This is where phishing resources will go.</p>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+<!-- 🙋‍♀️ Welcome + Logout Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("hookedUser");
+    const userInfoDiv = document.getElementById("user-info");
+
+    if (username && userInfoDiv) {
+      userInfoDiv.innerHTML = `
+        <span class="welcome-text">Welcome,</span>
+        <span class="username-text">${username}</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      `;
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("hookedUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>

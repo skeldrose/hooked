@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Phishing Awareness Quiz</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .quiz-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .question-box h2 {
+      color: #2A6F74;
+    }
+
+    .options label {
+      display: block;
+      text-align: left;
+      margin: 10px 0;
+      padding-left: 20px;
+      cursor: pointer;
+    }
+
+    .options input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .button-row {
+      margin-top: 30px;
+    }
+
+    .quiz-btn {
+      padding: 12px 24px;
+      background-color: #F76C5E;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 10px 10px 0;
+    }
+
+    .quiz-btn:hover {
+      background-color: #d95c4d;
+    }
+
+    #timer-display {
+      font-weight: bold;
+      color: #2A6F74;
+      margin-bottom: 10px;
+    }
+
+.hidden{
+  display: none;
+}
+
+  </style>
+</head>
+<body>
+
+<nav id="main-nav">
+  <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="quiz.html">Quiz</a></li>
+    <li><a href="your_scores.html">Your Scores</a></li>
+  </ul>
+  <div class="nav-user" id="user-info"></div>
+</nav>
+
+  <main class="quiz-container">
+    <div id="start-screen">
+      <h1>Phishing Awareness Quiz</h1>
+      <p>Test your knowledge with 20 multiple-choice questions.<br>You must score 75% to pass!</p>
+      <button class="quiz-btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+      <div id="timer-display"></div>
+      <div id="question-container"></div>
+      <div class="button-row">
+        <button id="next-btn" class="quiz-btn" onclick="nextQuestion()">Next</button>
+        <button class="quiz-btn" onclick="confirmExit()">Exit</button>
+      </div>
+    </div>
+
+    <div id="review-screen" class="hidden">
+      <h2>Review Your Answers</h2>
+      <div id="review-container"></div>
+      <h3 id="final-score"></h3>
+      <p id="final-time"></p>
+      <button class="quiz-btn" onclick="startQuiz()">Try Again</button>
+      <button class="quiz-btn" onclick="window.location.href='index.html'">Return Home</button>
+    </div>
+  </main>
+
+  <footer>
+    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo" />
+    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+    <p>Created as part of a final year project at The Open University</p>
+  </footer>
+
+  <script>
+const questions = [
+  {
+    question: "What is a common sign of a phishing email?",
+    options: ["A personal greeting with your full name", "An email from a known contact", "Poor spelling and grammar", "A secure URL starting with https://"],
+    answer: 2
+  },
+  {
+    question: "What should you do if you receive a suspicious email?",
+    options: ["Open it to see what it says", "Forward it to everyone you know", "Click any links to test them", "Report it and delete it"],
+    answer: 3
+  },
+  {
+    question: "Phishing emails often create a sense of ______.",
+    options: ["Humour", "Urgency", "Relief", "Celebration"],
+    answer: 1
+  },
+  {
+    question: "What does HTTPS mean in a web address?",
+    options: ["High Tech Page Server", "HyperText Transfer Protocol Secure", "Hacked Tech Protocol System", "Hosting Transfer Point Site"],
+    answer: 1
+  },
+  {
+    question: "Why might a phishing email impersonate a trusted company?",
+    options: ["To make it easier to understand", "To entertain users", "To trick recipients into trusting it", "To offer real deals"],
+    answer: 2
+  },
+  {
+    question: "Which of these is a safe practice?",
+    options: ["Clicking links from unknown senders", "Entering passwords on any website", "Using multi-factor authentication", "Ignoring software updates"],
+    answer: 2
+  },
+  {
+    question: "What’s a red flag in a sender’s email address?",
+    options: ["It matches your contacts", "It uses a familiar domain", "It has odd characters or misspellings", "It ends in .com"],
+    answer: 2
+  },
+  {
+    question: "Phishing can happen through:",
+    options: ["Emails only", "Text messages only", "Phone calls only", "All of the above"],
+    answer: 3
+  },
+  {
+    question: "If a link looks suspicious, what should you do?",
+    options: ["Click it quickly", "Hover to preview the URL", "Forward it", "Bookmark it"],
+    answer: 1
+  },
+  {
+    question: "What does a phishing website usually try to steal?",
+    options: ["Music preferences", "Bank details and passwords", "Favourite colour", "Weather info"],
+    answer: 1
+  },
+  {
+    question: "Which of these messages is likely a phishing attempt?",
+    options: ["Your account has been suspended! Click here to reactivate", "Weekly newsletter", "Thank you for your purchase", "Your subscription is due next month"],
+    answer: 0
+  },
+  {
+    question: "What does multi-factor authentication do?",
+    options: ["Makes your password longer", "Allows access from multiple devices", "Adds extra layers of security", "Sends your data to backup"],
+    answer: 2
+  },
+  {
+    question: "Which type of file attachment might be suspicious?",
+    options: [".jpg", ".txt", ".exe", ".doc"],
+    answer: 2
+  },
+  {
+    question: "How often should you change your passwords?",
+    options: ["Every 10 years", "Only if hacked", "Never", "Regularly and when suspicious activity is seen"],
+    answer: 3
+  },
+  {
+    question: "What’s a safe way to check if a message is genuine?",
+    options: ["Call the sender using a known number", "Reply directly to the message", "Click the link in the message", "Ignore it completely"],
+    answer: 0
+  },
+  {
+    question: "Why do attackers use fake logos and branding?",
+    options: ["To be creative", "To bypass spam filters", "To appear trustworthy", "To sell products"],
+    answer: 2
+  },
+  {
+    question: "Which of these passwords is strongest?",
+    options: ["Password123", "Summer2022", "G!v3m3Str0nGp@ss!", "qwerty"],
+    answer: 2
+  },
+  {
+    question: "Phishing attacks are:",
+    options: ["Always from other countries", "Completely avoidable", "Targeted or random", "Only against businesses"],
+    answer: 2
+  },
+  {
+    question: "You clicked a phishing link. What should you do first?",
+    options: ["Ignore it", "Reset your password and report it", "Turn off your computer", "Unplug your router"],
+    answer: 1
+  },
+  {
+    question: "Where can you learn more about phishing prevention?",
+    options: ["Gaming sites", "Fashion blogs", "National Cyber Security Centre", "Social media"],
+    answer: 2
+  }
+];
+
+
+    let current = 0;
+    let answers = [];
+    let score = 0;
+    let startTime, timerInterval;
+
+function startQuiz() {
+  current = 0;
+  answers = [];
+  score = 0;
+
+  // ✅ Hide nav bar properly
+  document.getElementById("main-nav").classList.add("hidden");
+
+  // Show quiz, hide other screens
+  document.getElementById("start-screen").classList.add("hidden");
+  document.getElementById("review-screen").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.remove("hidden");
+
+  // Start timer
+  startTime = new Date();
+  updateTimer();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 1000);
+
+  // Load first question
+  loadQuestion();
+}
+
+
+
+    function updateTimer() {
+      const now = new Date();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      document.getElementById("timer-display").textContent = `⏱️ Time: ${minutes}m ${seconds}s`;
+    }
+
+    function loadQuestion() {
+      const container = document.getElementById("question-container");
+      const q = questions[current];
+      container.innerHTML = `
+        <div class="question-box">
+          <h2>Question ${current + 1} of ${questions.length}</h2>
+          <p><strong>${q.question}</strong></p>
+          <div class="options">
+            ${q.options.map((opt, idx) => `
+              <label>
+                <input type="radio" name="answer" value="${idx}" ${answers[current] == idx ? 'checked' : ''}>
+                ${opt}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Please select an answer before continuing.");
+        return;
+      }
+
+      answers[current] = parseInt(selected.value);
+      current++;
+
+      if (current >= questions.length) {
+        finishQuiz();
+      } else {
+        loadQuestion();
+      }
+    }
+
+    function confirmExit() {
+      if (confirm("Do you really wish to exit the quiz? Your answers will not be saved.")) {
+        window.location.href = "index.html";
+      }
+    }
+
+function finishQuiz() {
+  clearInterval(timerInterval);
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("review-screen").classList.remove("hidden");
+
+  const review = document.getElementById("review-container");
+  review.innerHTML = "";
+  score = 0;
+
+  questions.forEach((q, idx) => {
+    const isCorrect = q.answer === answers[idx];
+    if (isCorrect) score++;
+    const answerText = q.options[answers[idx]] || "<em>No answer</em>";
+    review.innerHTML += `
+      <p><strong>Q${idx + 1}:</strong> ${q.question}<br>
+      <span style="color: ${isCorrect ? 'green' : 'red'};">Your answer: ${answerText}</span></p>
+    `;
+  });
+
+  const percent = Math.round((score / questions.length) * 100);
+  const pass = percent >= 75;
+  const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
+
+  document.getElementById("final-score").textContent = pass
+    ? `✅ You scored ${percent}%. You passed!`
+    : `❌ You scored ${percent}%. You did not pass.`;
+
+  document.getElementById("final-time").textContent = `Elapsed time: ${minutes}m ${seconds}s`;
+
+// ✅ Submit score to backend (no timeTaken)
+const username = localStorage.getItem("hookedUser");
+if (username) {
+  const payload = {
+    username,                          // ✅ from localStorage
+    score: percent,                    // ✅ calculated score
+    mode: "General",                   // ✅ or any label you use
+    type: "Quiz",                      // ✅ distinguishes from Game
+    timeTaken: elapsedSeconds,        // ✅ total time taken in seconds
+    timestamp: new Date().toLocaleString() // ✅ readable date/time
+  };
+
+    fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(data => console.log("✅ Quiz score saved:", data))
+    .catch(err => console.error("❌ Error saving quiz score:", err));
+}
+}
+  </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+
+<!-- 🙋‍♀️ Welcome + Logout Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("hookedUser");
+    const userInfoDiv = document.getElementById("user-info");
+
+    if (username && userInfoDiv) {
+      userInfoDiv.innerHTML = `
+        <span class="welcome-text">Welcome,</span>
+        <span class="username-text">${username}</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      `;
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("hookedUser");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
