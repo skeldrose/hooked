@@ -54,7 +54,7 @@ app.post('/api/users', (req, res) => {
 
 // POST /api/submit-score — Add a score entry
 app.post('/api/submit-score', (req, res) => {
-  const { username, score, mode, timestamp, type } = req.body;
+  const { username, score, mode, timestamp, type, timeTaken } = req.body;
   console.log("📩 Incoming score payload:", req.body);
 
   if (!username || score === undefined || !mode || !timestamp || !type) {
@@ -73,7 +73,8 @@ app.post('/api/submit-score', (req, res) => {
     score,
     mode,
     type,
-    timestamp
+    timestamp,
+    timeTaken  // ✅ Add this to save duration
   };
 
   user.scores.push(scoreEntry);
@@ -82,6 +83,7 @@ app.post('/api/submit-score', (req, res) => {
 
   res.json({ message: 'Score saved', scores: user.scores });
 });
+
 
 // GET /api/scores/:username — Get scores for a user
 app.get('/api/scores/:username', (req, res) => {
