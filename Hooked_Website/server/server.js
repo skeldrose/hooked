@@ -114,5 +114,5 @@ app.get('/api/leaderboard', (req, res) => {
 
 // ✅ Start server
 app.listen(PORT, () => {
-  console.log(`✅ Backend running at http://localhost:3000`);
+  console.log(`✅ Backend running on port ${PORT}`);
 });
