@@ -453,7 +453,7 @@ function showGameComplete() {
       score: Math.round((score / total) * 100),
       mode: "Analyst",            // ⬅️ Only change this line!
       type: "Spot the Phish",     // ✅ To display cleanly on your scores table
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toISOString()
     };
 
     fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {

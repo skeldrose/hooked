@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>resources - Hooked?</title>
+  <title>Resources - Hooked?</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  
+
   <nav>
     <img src="images/Hooked_logo_teal_transparent.png" alt="Hooked Logo" class="logo">
     <ul class="nav-links">
@@ -19,32 +19,128 @@
     <div class="nav-user" id="user-info"></div>
   </nav>
 
-  <main>
-    <h1>Resources Page</h1>
-    <p>This is where phishing resources will go.</p>
-  </main>
+<main>
 
-  <footer>
-    <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo" />
-    <p>© 2025 Hooked? | Phishing Awareness Platform</p>
-    <p>Created as part of a final year project at The Open University</p>
-  </footer>
+<section class="intro">
+  <h3 class="section-heading">🔎 What is Phishing?</h3>
+  <p>
+    A scam where attackers pretend to be someone you trust—like your bank or a delivery service—to trick you into sharing personal information.
+  </p>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const user = localStorage.getItem("hookedUser");
-    if (!user) {
-      window.location.href = "login.html";
-    }
-  });
-</script>
+  <h3 class="section-heading">🧪 Types of Phishing</h3>
+  <p>
+    <span class="phish-label">Email:</span> Fake emails with dodgy links.<br>
+    <span class="phish-label">Smishing:</span> Scam texts.<br>
+    <span class="phish-label">Vishing:</span> Scam calls.<br>
+    <span class="phish-label">Spear Phishing:</span> Targeted and personal.
+  </p>
 
-<!-- 🙋‍♀️ Welcome + Logout Script -->
+  <h3 class="section-heading">🕵️ How to Spot a Phish</h3>
+  <p>
+    Look for poor grammar, suspicious links, urgent tone, unknown senders, and requests for sensitive info.<br>
+    <span class="phish-warning">When in doubt - don’t click. Check with the real source.</span>
+  </p>
+</section>
+
+<section class="resource-intro">
+  <h4>🧭 More Trusted Resources</h4>
+  <p>Explore additional tools, guides, and links to help you stay secure. 
+    All links below can be trusted.</p>
+</section>
+
+<section class="resource-section">
+  <div class="resource-grid">
+
+    <div class="resource-btn fade-in-up delay-1">
+      <h3>Best Practices</h3>
+      <div class="practice-block">
+        <p><strong>Enable MFA</strong><br><span>Use multi-factor authentication wherever possible.</span></p>
+        <p><strong>Update Regularly</strong><br><span>Keep your software and devices up to date.</span></p>
+        <p><strong>Use Strong Passwords</strong><br><span>Create unique passwords for each account.</span></p>
+        <p><strong>Report Phishing</strong><br><span>Email <em>report@phishing.gov.uk</em> or your IT team if something looks suspicious.</span></p>
+      </div>
+    </div>
+
+    <div class="resource-btn fade-in-up delay-2">
+      <h3>Learn More</h3>
+      <div class="practice-block">
+        <p>
+          <strong>National Cyber Security Centre</strong>
+          <span>
+            The UK’s authority on cyber security. Offers alerts, training, and guidance to protect businesses and individuals online.
+            <a href="https://www.ncsc.gov.uk" target="_blank">Visit ncsc.gov.uk</a>.
+          </span>
+        </p>
+        <p>
+          <strong>Cyber Aware UK</strong>
+          <span>
+            A government-backed campaign offering simple, practical advice to stay secure online.
+            <a href="https://www.cyberaware.gov.uk" target="_blank">Visit cyberaware.gov.uk</a>.
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="resource-btn fade-in-up delay-3">
+      <h3>Practice Tools</h3>
+      <div class="practice-block">
+        <p>
+          <strong>Spot the Phish Game</strong>
+          <span>
+            Test your skills by identifying phishing emails under pressure. <a href="spot_the_phish_start.html">Play now</a>.
+          </span>
+        </p>
+        <p>
+          <strong>Phishing Quiz</strong>
+          <span>
+            See if you can spot red flags and earn the title of Phishing Master. <a href="quiz.html">Take the quiz</a>.
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="resource-btn fade-in-up delay-4">
+      <h3>Downloadables</h3>
+      <div class="practice-block">
+        <p>
+          <strong>"10 Signs of a Phishing Email" Cheatsheet</strong>
+          <span>
+            Quick reference to help recognise suspicious messages. <em>PDF format.</em>
+          </span>
+        </p>
+        <p>
+          <strong>"Stay Alert - Spot the Phish" Poster</strong>
+          <span>
+            Printable poster to raise awareness in your school, office, or organisation.
+          </span>
+        </p>
+        <p>
+          <strong>"What to Do If You Suspect a Phish" Flowchart</strong>
+          <span>
+            A step-by-step guide to help users act quickly and safely when unsure.
+          </span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo">
+  <p>© 2025 Hooked? | Phishing Awareness Platform</p>
+  <p>Created as part of a final year project at The Open University</p>
+</footer>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("hookedUser");
+    if (!user) window.location.href = "login.html";
+
     const username = localStorage.getItem("hookedUser");
     const userInfoDiv = document.getElementById("user-info");
-
     if (username && userInfoDiv) {
       userInfoDiv.innerHTML = `
         <span class="welcome-text">Welcome,</span>

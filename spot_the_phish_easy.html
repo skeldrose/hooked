@@ -453,10 +453,10 @@ function showGameComplete() {
   if (username) {
     const payload = {
       username,
-      score: percent,                            // Final percentage
-      mode: "Intern",                            // Or whatever mode label you're using
-      type: "Spot the Phish",                              // Marks this as a game
-      timestamp: new Date().toLocaleString()     // Simple readable format
+      score: percent,                            
+      mode: "Intern",                            
+      type: "Spot the Phish",                              
+      timestamp: new Date().toISOString()
     };
 
     console.log("📩 Submitting Spot the Phish score:", payload);

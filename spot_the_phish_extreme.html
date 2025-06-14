@@ -453,7 +453,7 @@ function showGameComplete() {
       score: Math.round((score / total) * 100),
       mode: "SOC Commander",       // ⬅️ Final STP difficulty name
       type: "Spot the Phish",      // ⬅️ Ensures it's grouped under the same activity
-      timestamp: new Date().toLocaleString()
+      timestamp: new Date().toISOString()
     };
 
     fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {

@@ -318,3 +318,263 @@ footer {
   font-weight: 500;
 }
 
+.resources-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.resources-intro {
+  background: #fff6f5;
+  border: 1px solid #f76c5e;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.resources-intro ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  line-height: 1.8;
+  color: #2A6F74;
+}
+
+.card-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.home-card {
+  background-color: #E0F2F5;
+  border: 2px solid #F76C5E;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+.home-card img {
+  height: 50px;
+  margin-bottom: 12px;
+}
+
+.home-card h3 {
+  color: #2A6F74;
+  margin-bottom: 6px;
+}
+
+.card-sub {
+  color: #F76C5E;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.home-card p {
+  color: #2A6F74;
+  font-size: 0.95rem;
+}
+
+.home-card button {
+  margin-top: 10px;
+  margin-right: 8px;
+  padding: 8px 16px;
+  background-color: #F76C5E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.home-card button:hover {
+  background-color: #d9534f;
+}
+
+/* Coral headings with emoji */
+.section-heading {
+  color: #e75252;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Teal phishing type labels */
+.phish-label {
+  color: #165a5a;
+  font-weight: bold;
+}
+
+.phish-warning {
+  color: #165a5a;  /* Teal */
+  font-weight: 700;
+}
+
+/* Resources Page */
+.resource-section {
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  max-width: 1000px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.resource-btn {
+  background-color: #F9FCFC;
+  color: #2A6F74;
+  font-weight: bold;
+  border: 2px solid #F76C5E;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  /* Smooth hover + appear transition */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Optional hover effect */
+.resource-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.resource-btn h3 {
+  color: #F76C5E;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #F76C5E;
+  padding-bottom: 4px;
+}
+
+.resource-btn ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+  font-weight: normal;
+  color: #2A6F74;
+}
+
+.resource-btn li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.resource-btn a {
+  color: #2A6F74;
+  text-decoration: underline;
+}
+
+.resource-btn a:hover {
+  text-decoration: none;
+}
+
+/* Intro text above the cards */
+.resource-intro {
+  text-align: center;
+  max-width: 800px;
+  margin: 20px auto 10px auto;
+  padding: 0 20px;
+}
+
+.resource-intro h4 {
+  font-size: 1.3rem;
+  color: #F76C5E;
+  margin-bottom: 8px;
+}
+
+.resource-intro p {
+  font-size: 1rem;
+  color: #2A6F74;
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+/* Link-style blocks (used in Learn More) */
+.link-block {
+  margin-bottom: 16px;
+  color: #2A6F74;
+}
+
+.link-block strong {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #2A6F74;
+}
+
+.link-block a {
+  display: block;
+  font-weight: normal;
+  color: #2A6F74;
+  text-decoration: underline;
+}
+
+.link-block a:hover {
+  text-decoration: none;
+}
+
+/* Practice block style (used for Best Practices, Quiz, etc) */
+.practice-block p {
+  margin-bottom: 8px;
+  line-height: 1.35;
+  color: #2A6F74;
+}
+
+.practice-block strong {
+  font-size: 1rem;
+  color: #2A6F74;
+  display: block;
+  margin-bottom: 1px;
+  font-weight: 600;
+}
+
+.practice-block span {
+  font-weight: normal;
+  font-size: 0.95rem;
+  display: block;
+  padding-left: 2px;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade-in animation utility */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.fade-in-up.delay-1 { animation-delay: 0.2s; }
+.fade-in-up.delay-2 { animation-delay: 0.4s; }
+.fade-in-up.delay-3 { animation-delay: 0.6s; }
+.fade-in-up.delay-4 { animation-delay: 0.8s; }
+
+
+
+
+

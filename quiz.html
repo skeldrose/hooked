@@ -57,6 +57,40 @@
   display: none;
 }
 
+.start-cta-text {
+  margin-top: 12px;
+  color: #2A6F74;
+  font-style: italic;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.quiz-testimonial blockquote {
+  font-style: italic;
+  color: #555;
+  margin: 20px auto 0;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.quiz-banner {
+  display: block;
+  max-width: 300px;
+  margin: 0 auto 20px;
+  animation: fadeInUp 0.6s ease;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -73,31 +107,47 @@
   <div class="nav-user" id="user-info"></div>
 </nav>
 
-  <main class="quiz-container">
-    <div id="start-screen">
-      <h1>Phishing Awareness Quiz</h1>
-      <p>Test your knowledge with 20 multiple-choice questions.<br>You must score 75% to pass!</p>
-      <button class="quiz-btn" onclick="startQuiz()">Start Quiz</button>
-    </div>
+<main class="quiz-container">
 
-    <div id="quiz-screen" class="hidden">
-      <div id="timer-display"></div>
-      <div id="question-container"></div>
-      <div class="button-row">
-        <button id="next-btn" class="quiz-btn" onclick="nextQuestion()">Next</button>
-        <button class="quiz-btn" onclick="confirmExit()">Exit</button>
-      </div>
-    </div>
+<div id="start-screen">
+  <img src="images/quiz_time.png" alt="Quiz Time" class="quiz-banner" />
+  
+  <h1>Phishing Awareness Quiz</h1>
+  <p>Test your knowledge with 20 multiple-choice questions.<br>
+     You must score <strong>75%</strong> to pass. 🧠 </p>
 
-    <div id="review-screen" class="hidden">
-      <h2>Review Your Answers</h2>
-      <div id="review-container"></div>
-      <h3 id="final-score"></h3>
-      <p id="final-time"></p>
-      <button class="quiz-btn" onclick="startQuiz()">Try Again</button>
-      <button class="quiz-btn" onclick="window.location.href='index.html'">Return Home</button>
+  <button class="quiz-btn" onclick="startQuiz()">Start Quiz</button>
+
+  <p class="start-cta-text">Don’t worry if you’re unsure - it’s all about learning.</p>
+
+  <section class="quiz-testimonial">
+    <blockquote>
+      “I thought I knew how to spot phishing… until I played this!”<br>
+      <cite>– Lauran Welsh, Feedback Survey</cite>
+    </blockquote>
+  </section>
+</div>
+
+
+  <div id="quiz-screen" class="hidden">
+    <div id="timer-display"></div>
+    <div id="question-container"></div>
+    <div class="button-row">
+      <button id="next-btn" class="quiz-btn" onclick="nextQuestion()">Next</button>
+      <button class="quiz-btn" onclick="confirmExit()">Exit</button>
     </div>
-  </main>
+  </div>
+
+  <div id="review-screen" class="hidden">
+    <h2>Review Your Answers</h2>
+    <div id="review-container"></div>
+    <h3 id="final-score"></h3>
+    <p id="final-time"></p>
+    <button class="quiz-btn" onclick="startQuiz()">Try Again</button>
+    <button class="quiz-btn" onclick="window.location.href='index.html'">Return Home</button>
+  </div>
+
+</main>
 
   <footer>
     <img src="images/Hooked_logo_with_tag_transparent.png" alt="Hooked Logo with Tagline" class="footer-logo" />
@@ -325,12 +375,12 @@ function finishQuiz() {
 const username = localStorage.getItem("hookedUser");
 if (username) {
   const payload = {
-    username,                          // ✅ from localStorage
-    score: percent,                    // ✅ calculated score
-    mode: "General",                   // ✅ or any label you use
-    type: "Quiz",                      // ✅ distinguishes from Game
-    timeTaken: elapsedSeconds,        // ✅ total time taken in seconds
-    timestamp: new Date().toLocaleString() // ✅ readable date/time
+    username,                          
+    score: percent,                    
+    mode: "General",                  
+    type: "Quiz",                      
+    timeTaken: elapsedSeconds,        
+    timestamp: new Date().toISOString()
   };
 
     fetch("https://hooked-backend-frgz.onrender.com/api/submit-score", {
